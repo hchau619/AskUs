@@ -1,0 +1,44 @@
+extends ./layout.jade
+
+block tabs
+  li.active(role='presentation')
+    a(href='/') New
+  li(role='presentation')
+    a(href='#') Travel
+  li(role='presentation')
+    a(href='#') Food
+  li(role='presentation')
+    a(href='#') Entertainment       
+  li(role='presentation')
+    a(href='#') Relationship   
+  li(role='presentation')
+    a(href='#') Career      
+  li(role='presentation')
+    a(href='#') Life
+  li(role='presentation')
+    a(href='#') Other
+
+block content
+  hr
+  if db.questions != 0
+    each q in db.questions
+      .row
+        .col-lg-12
+          .panel.panel-default
+            .panel-heading.clearfix
+              .pull-left
+                //PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
+                span
+                  strong #{q.author} 
+                span.text-muted #{q.time}
+              .pull-right
+                a#comments.btn.btn-xs.btn-warning.btn-circle.text-uppercase(href='/question/#{q.qid}')
+                  span.glyphicon.glyphicon-comment Comments: #{q.responses.length} 
+            a(href='/question/#{q.qid}')
+              .panel-body
+                p.question #{q.question}
+              
+            
+    
+
+

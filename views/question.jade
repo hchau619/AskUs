@@ -1,0 +1,85 @@
+extends ./layout.jade
+
+block head
+	script(type='text/javascript').
+		function upvote(rid){
+			var url = "/vote/up/#{myQid}/"+rid;
+			$.ajax({
+				url: url,
+				type:'GET',
+				dataType:'json',
+				success: function(data){
+					var eID= '#votes'+rid;
+					$(eID).empty().append(data.data+" ");
+				}
+			});
+		}	
+		function downvote(rid){
+			var url = "/vote/down/#{myQid}/"+rid;
+			$.ajax({
+				url: url,
+				type:'GET',
+				dataType:'json',
+				success: function(data){
+					var eID= '#votes'+rid;
+					$(eID).empty().append(data.data+" ");
+				}
+			});
+		}
+	
+
+block tabs
+	li(role='presentation')
+		a(href='/') New
+	li(role='presentation')
+		a(href='#') Travel
+	li(role='presentation')
+		a(href='#') Food
+	li(role='presentation')
+		a(href='#') Entertainment       
+	li(role='presentation')
+		a(href='#') Relationship   
+	li(role='presentation')
+		a(href='#') Career      
+	li(role='presentation')
+		a(href='#') Life
+	li(role='presentation')
+		a(href='#') Other
+
+block content
+	hr
+	.row
+		.col-lg-12
+			.panel.panel-default
+				.panel-heading.clearfix
+					.pull-left
+						//PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
+						span
+							strong #{db.questions[myQid].author} 
+						span.text-muted #{db.questions[myQid].time}
+					.pull-right
+						button#reply.btn.btn-xs.btn-info.btn-circle.text-uppercase(type="button", data-toggle="modal", data-target="#myRModal")
+							span.glyphicon.glyphicon-share-alt REPLY
+				.panel-body
+					p.question #{db.questions[myQid].question}
+					p #{db.questions[myQid].descript}
+	if db.questions[myQid].responses
+		each resp in db.questions[myQid].responses
+			.row
+				.col-lg-11.pull-right
+					.panel.panel-default
+						.panel-heading.clearfix
+							.pull-left
+								//PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
+								span
+									strong #{resp.author} 
+								span.text-muted #{resp.time}
+								span.text-muted #{resp.rid}
+							.pull-right
+								strong(id='votes#{resp.rid}') #{resp.votes} 
+								button.btn.btn-xs.btn-success.btn-circle.text-uppercase(type="button", onclick="upvote(#{resp.rid})")
+									span.glyphicon.glyphicon-chevron-up
+								button.btn.btn-xs.btn-danger.btn-circle.text-uppercase(type="button", onclick="downvote(#{resp.rid})")
+									span.glyphicon.glyphicon-chevron-down
+						.panel-body
+							p #{resp.response}

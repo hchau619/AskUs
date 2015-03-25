@@ -1,0 +1,92 @@
+doctype html
+html
+  head
+    title #{title}
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(href='/css/bootstrap.min.css', rel='stylesheet', type='text/css')
+    link(href='/css/bootstrap-theme.min.css', rel='stylesheet', type='text/css')
+    link(href='/css/custom.css', rel='stylesheet', type='text/css')
+    script.
+      
+    block head
+  body
+    .container
+      // Navbar
+      nav.navbar.navbar-inverse.navbar-fixed-top
+        .container
+          .navbar-header
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+              span.sr-only Toggle navigation         
+              span.icon-bar         
+              span.icon-bar         
+              span.icon-bar
+            button.btn.btn-success.btn-md.navbar-left(type="button", data-toggle="modal", data-target="#myQModal")
+              | ASK A QUESTION
+          #navbar.navbar-collapse.collapse
+            form.navbar-form.navbar-right
+              .form-group
+                input.form-control(type='text', placeholder='Email')
+              .form-group
+                input.form-control(type='password', placeholder='Password')  
+              button.btn.btn-success(type='submit') Sign in
+      // Navbar END
+    hr
+    hr
+    .container
+      .row
+        ul.nav.nav-tabs(role='tablist')
+          block tabs
+      .row
+        block content
+
+    //Question Modal    
+    #myQModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="false")
+            h4#myModalLabel.modal-title 
+              | ASK A QUESTION
+          .modal-body 
+            form#qform.clearfix(method="post", action="/", name="myq")
+              .form-group
+                label(for="question") QUESTION
+                input#question.form-control(type="text", placeholder="Type your question here", name="question")
+              .form-group
+                label(for="discription") DESCRIPTION
+                textarea.form-control(form="qform", placeholder="Please elaborate...", name="descript")
+              .form-group
+                label(for="tag") QUESTION CATEGORY: 
+                select(name="tag")
+                  option(value="general") General
+                  option(value="travel") Travel
+                  option(value="food") Food
+                  option(value="entertainment") Entertainment
+                  option(value="relationship") Relationship
+                  option(value="career") Career
+                  option(value="life") Life
+              .form-group
+                button.btn.btn-primary.pull-right(type="submit") AskIt!
+                button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
+    // Response Modal
+    #myRModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="false")
+            h4#myModalLabel.modal-title 
+              | RESPOND
+          .modal-body 
+            form#rform.clearfix(method="post", action="/question/#{myQid}", name="myR")
+              .form-group
+                textarea.form-control(form="rform", placeholder="Please elaborate...", name="resp")
+              .form-group
+                button.btn.btn-primary.pull-right(type="submit") AskIt!
+                button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
+    
+  //jQuery (necessary for Bootstrap's JavaScript plugins)
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+  // Include all compiled plugins (below), or include individual files as needed
+  script(src='/js/bootstrap.min.js')
