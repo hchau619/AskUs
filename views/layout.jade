@@ -6,8 +6,6 @@ html
     link(href='/css/bootstrap.min.css', rel='stylesheet', type='text/css')
     link(href='/css/bootstrap-theme.min.css', rel='stylesheet', type='text/css')
     link(href='/css/custom.css', rel='stylesheet', type='text/css')
-    script.
-      
     block head
   body
     .container
@@ -32,6 +30,7 @@ html
       // Navbar END
     hr
     hr
+    // Category tabs
     .container
       .row
         ul.nav.nav-tabs(role='tablist')
@@ -88,5 +87,7 @@ html
     
   //jQuery (necessary for Bootstrap's JavaScript plugins)
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+  // Backup jquery for demo: script(src='/js/jquery1.11.2.js')
   // Include all compiled plugins (below), or include individual files as needed
   script(src='/js/bootstrap.min.js')
+  block footer

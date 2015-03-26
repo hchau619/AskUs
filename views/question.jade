@@ -1,33 +1,6 @@
 extends ./layout.jade
-
-block head
-	script(type='text/javascript').
-		function upvote(rid){
-			var url = "/vote/up/#{myQid}/"+rid;
-			$.ajax({
-				url: url,
-				type:'GET',
-				dataType:'json',
-				success: function(data){
-					var eID= '#votes'+rid;
-					$(eID).empty().append(data.data+" ");
-				}
-			});
-		}	
-		function downvote(rid){
-			var url = "/vote/down/#{myQid}/"+rid;
-			$.ajax({
-				url: url,
-				type:'GET',
-				dataType:'json',
-				success: function(data){
-					var eID= '#votes'+rid;
-					$(eID).empty().append(data.data+" ");
-				}
-			});
-		}
 	
-
+//Determine which tab is active
 block tabs
 	li(role='presentation')
 		a(href='/') New
@@ -48,6 +21,7 @@ block tabs
 
 block content
 	hr
+	//Display question
 	.row
 		.col-lg-12
 			.panel.panel-default
@@ -63,6 +37,7 @@ block content
 				.panel-body
 					p.question #{db.questions[myQid].question}
 					p #{db.questions[myQid].descript}
+	//Display responses
 	if db.questions[myQid].responses
 		each resp in db.questions[myQid].responses
 			.row
@@ -77,9 +52,12 @@ block content
 								span.text-muted #{resp.rid}
 							.pull-right
 								strong(id='votes#{resp.rid}') #{resp.votes} 
-								button.btn.btn-xs.btn-success.btn-circle.text-uppercase(type="button", onclick="upvote(#{resp.rid})")
+								button.btn.btn-xs.btn-success.btn-circle.text-uppercase(type="button", onclick="upvote(#{myQid}, #{resp.rid})")
 									span.glyphicon.glyphicon-chevron-up
-								button.btn.btn-xs.btn-danger.btn-circle.text-uppercase(type="button", onclick="downvote(#{resp.rid})")
+								button.btn.btn-xs.btn-danger.btn-circle.text-uppercase(type="button", onclick="downvote(#{myQid}, #{resp.rid})")
 									span.glyphicon.glyphicon-chevron-down
 						.panel-body
 							p #{resp.response}
+
+block footer
+	script(src='/js/vote.js')

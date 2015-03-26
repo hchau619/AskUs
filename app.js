@@ -14,13 +14,13 @@ var db = {
             questions:[
               {
                 qid: 0,
-                question:"Big man in a suit of armor. Take that away then what are you? ", 
-                descript:" - Captain America", 
+                question:"Where should I eat in Vegas?", 
+                descript:"Gonna be in Vegas for spring break. Give me tips on where to eat without breaking the bank!", 
                 author:"CaptainAmerica", 
                 time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)",
                 tag: "food", 
                 responses:[
-                  {rid: 0, response: "A Genius Billionaire Playboy Philanthropist. ", votes:0, author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
+                  {rid: 0, response: "McDonalds there is the bomb! Check it out!", votes:0, author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
               
                 ]
               }
@@ -29,20 +29,20 @@ var db = {
 
 
 // Setup view engine
-// Citation: Express
+// Source: Express
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'jade');
 
+//Set up
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(router);
 
-
 //Make db available to all templates
 app.locals.db = db;
 
-/* GET home page. */
+/* Routes for home page. */
 router.route('/')
   .get(function(req, res) {
     res.render('index', { title: 'AskIt!-Homepage'});
@@ -63,6 +63,7 @@ router.route('/')
     res.render('index', { title: 'AskIt!-Homepage'});
   });
 
+/* Routes for a question. */
 router.route('/question/:id')
   .get(function(req, res) {
     res.render('question', { title: 'AskIt!', myQid:req.params.id});
@@ -81,16 +82,18 @@ router.route('/question/:id')
     res.render('question', { title: 'AskIt!', myQid:req.params.id});
   });
 
+/* Routes for upvote of a repsonse*/
 router.get('/vote/up/:qid/:rid', function(req,res){   
   console.log("got the up");
   var currVotes = ++db.questions[req.params.qid].responses[req.params.rid].votes;
-  res.send(JSON.stringify({data: currVotes}));
+  res.json({data:currVotes});
 });
 
+/* Routes for downvote of a repsonse*/
 router.get('/vote/down/:qid/:rid', function(req,res){   
   console.log("got the down");
   var currVotes = --db.questions[req.params.qid].responses[req.params.rid].votes;
-  res.send(JSON.stringify({data: currVotes}));
+  res.json({data:currVotes});
 });
 
 //Create server
