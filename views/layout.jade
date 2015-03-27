@@ -21,12 +21,15 @@ html
             button.btn.btn-success.btn-md.navbar-left(type="button", data-toggle="modal", data-target="#myQModal")
               | ASK A QUESTION
           #navbar.navbar-collapse.collapse
-            form.navbar-form.navbar-right
+            form#signInForm.navbar-form.navbar-right(method="POST", action="/signin")
               .form-group
-                input.form-control(type='text', placeholder='Email')
+                p.promptFail #{promptFail}
               .form-group
-                input.form-control(type='password', placeholder='Password')  
+                input.form-control(type='text', placeholder='Email', name='email')
+              .form-group
+                input.form-control(type='password', placeholder='Password', name='password')  
               button.btn.btn-success(type='submit') Sign in
+              a.btn.btn-primary.pull-right(href="/register") Register
       // Navbar END
     hr
     hr

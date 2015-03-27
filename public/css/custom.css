@@ -1,10 +1,4 @@
-.question{
-	font-weight: bolder;
-	font-size: 120%;	
-}
-
 a {
-    color: #000;
     text-decoration: none;
 }
 
@@ -13,4 +7,23 @@ a:hover
      color:#5CB85C; 
      text-decoration:none; 
      cursor:pointer;  
+}
+
+.question{
+	font-weight: bolder;
+	font-size: 120%;
+	color: #000;	
+}
+
+.promptFail{
+	color: #FF0000; 
+	font-weight: bold;
+	padding-right: 5px;
+	padding-top: 5px;
+}
+
+.promptSuccess{
+	color: #5CB85C; 
+	font-weight: bold;
+	padding-right: 5px;
 }

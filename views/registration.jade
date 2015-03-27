@@ -1,0 +1,15 @@
+extends ./layout.jade
+
+block tabs
+block content
+	.col-lg-4.col-lg-offset-4
+		//Source: Twitter Bootrap
+		form.form-signin.clearfix(method="POST", action="/registration", name="regForm")
+			h2.form-signin-heading.pull-right Registration   
+			input#username.form-control(type='text', placeholder='Username', required='', autofocus='', name="username")
+			input#inputEmail.form-control(type='email', placeholder='Email address', required='', autofocus='', name="email")     
+			input#inputPassword.form-control(type='password', placeholder='Password', required='', name="pass")            
+			button.btn.btn-md.btn-success(type='submit') submit
+			a.pull-right.center-h(href="/") Back to mainpage
+		p.prompt #{promptFail}#{promptSuccess}
+			
