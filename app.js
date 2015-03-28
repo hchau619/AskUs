@@ -36,7 +36,9 @@ var db = {
                   {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", votes: 0, author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
                 ]
               }
-            ]
+            ],
+
+            tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
           };
 
 // Setup view engine
@@ -83,6 +85,15 @@ router.route('/')
       res.render('index', { title: 'AskUs!-Homepage'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
+    }
+  });
+
+router.route('/new')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-New', user: req.session.username, activeTab: "new"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
     }
   });
 

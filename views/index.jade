@@ -1,26 +1,34 @@
 extends ./layout.jade
 
 block tabs
-  li.active(role='presentation')
-    a(href='/') New
-  li(role='presentation')
-    a(href='/travel') Travel
-  li(role='presentation')
-    a(href='/food') Food
-  li(role='presentation')
-    a(href='/entertainment') Entertainment       
-  li(role='presentation')
-    a(href='/relationship') Relationship   
-  li(role='presentation')
-    a(href='/career') Career      
-  li(role='presentation')
-    a(href='/life') Life
-  li(role='presentation')
-    a(href='/other') Other
+
+  //
+    li(role='presentation')
+      a(href='/') New
+    li(role='presentation')
+      a(href='/travel') Travel
+    li(role='presentation')
+      a(href='/food') Food
+    li(role='presentation')
+      a(href='/entertainment') Entertainment       
+    li(role='presentation')
+      a(href='/relationship') Relationship   
+    li(role='presentation')
+      a(href='/career') Career      
+    li(role='presentation')
+      a(href='/life') Life
+    li(role='presentation')
+      a(href='/other') Other
+
+  if db.tabs != 0
+    each tab in db.tabs
+      li(role='presentation')
+        a(href='/' + tab) #{tab}
 
 block content
   hr
 
+  -console.log(activeTab)
 
   if db.questions != 0
     each q in db.questions
