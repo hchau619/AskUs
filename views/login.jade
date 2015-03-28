@@ -1,0 +1,14 @@
+extends ./layout.jade
+
+block tabs
+block content
+	.col-lg-4.col-lg-offset-4
+		//Source: Twitter Bootrap
+		form.form-signin.clearfix(method="POST", action="/login", name="loginForm")
+			h2.form-signin-heading Login   
+			input#inputEmail.form-control(type='email', placeholder='Email address', required='', autofocus='', name="email")     
+			input#inputPassword.form-control(type='password', placeholder='Password', required='', name="password")            
+			button.btn.btn-md.btn-success(type='submit') submit
+			a.btn.btn-md.pull-right(href="/registration") Register for an account
+		.promptFail #{promptFail}
+			

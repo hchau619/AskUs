@@ -10,6 +10,7 @@ html
   body
     .container
       // Navbar
+      //Source: Twitter Bootstrap   
       nav.navbar.navbar-inverse.navbar-fixed-top
         .container
           .navbar-header
@@ -18,21 +19,15 @@ html
               span.icon-bar         
               span.icon-bar         
               span.icon-bar
-            button.btn.btn-success.btn-md.navbar-left(type="button", data-toggle="modal", data-target="#myQModal")
-              | ASK A QUESTION
           #navbar.navbar-collapse.collapse
-            form#signInForm.navbar-form.navbar-right(method="POST", action="/signin")
-              .form-group
-                p.promptFail #{promptFail}
-              .form-group
-                input.form-control(type='text', placeholder='Email', name='email')
-              .form-group
-                input.form-control(type='password', placeholder='Password', name='password')  
-              button.btn.btn-success(type='submit') Sign in
-              a.btn.btn-primary.pull-right(href="/register") Register
+            a.btn.btn-primary.btn-md.pull-right(href='/logout')
+              | LOGOUT
+            button.btn.btn-success.btn-md.pull-left(type="button", data-toggle="modal", data-target="#myQModal")
+              | ASK A QUESTION
       // Navbar END
     hr
     hr
+  
     // Category tabs
     .container
       .row
@@ -41,7 +36,8 @@ html
       .row
         block content
 
-    //Question Modal    
+    //Question Modal
+    //Source: Twitter Bootstrap   
     #myQModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
@@ -72,6 +68,7 @@ html
                 button.btn.btn-primary.pull-right(type="submit") AskIt!
                 button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
     // Response Modal
+    //Source: Twitter Bootstrap
     #myRModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
       .modal-dialog
         .modal-content

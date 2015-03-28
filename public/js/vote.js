@@ -24,6 +24,5 @@ function downvote(myQid, rid){
 			var eltID= '#votes'+rid;
 			$(eltID).empty().append(data.data+" ");
 		},
-		
 	});
 }
