@@ -4,22 +4,24 @@ block tabs
   li.active(role='presentation')
     a(href='/') New
   li(role='presentation')
-    a(href='#') Travel
+    a(href='/travel') Travel
   li(role='presentation')
-    a(href='#') Food
+    a(href='/food') Food
   li(role='presentation')
-    a(href='#') Entertainment       
+    a(href='/entertainment') Entertainment       
   li(role='presentation')
-    a(href='#') Relationship   
+    a(href='/relationship') Relationship   
   li(role='presentation')
-    a(href='#') Career      
+    a(href='/career') Career      
   li(role='presentation')
-    a(href='#') Life
+    a(href='/life') Life
   li(role='presentation')
-    a(href='#') Other
+    a(href='/other') Other
 
 block content
   hr
+
+
   if db.questions != 0
     each q in db.questions
       .row
@@ -37,8 +39,3 @@ block content
             a(href='/question/#{q.qid}')
               .panel-body
                 p.question #{q.question}
-              
-            
-    
-
-
