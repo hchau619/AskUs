@@ -23,6 +23,18 @@ var db = {
                 responses:[
                   {rid: 0, response: "McDonalds there is the bomb! Check it out!", votes:0, author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
                 ]
+              },
+              {
+                qid: 1,
+                question: "What is a good movie to watch?",
+                descript: "I'm hanging out with some friends later tonight.  What is a good entertaining action movie to watch?",
+                author: "Hulk",
+                time: "Fri Mar 27 2015 11:11:11 GMT-0700 (PDT)",
+                tag: "entertainment",
+                responses: [
+                  {rid: 0, response: "Why don't you watch the Avengers?", votes: 0, author: "CaptainAmerica", time: "Fri Mar 27 2015 11:13:11 GMT-0700 (PDT)"},
+                  {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", votes: 0, author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
+                ]
               }
             ]
           };
@@ -50,7 +62,7 @@ app.locals.db = db;
 router.route('/')
   .get(function(req, res) {
     if(req.session.validUser){
-      res.render('index', { title: 'AskUs!-Homepage', user: req.session.username});
+      res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: "new"});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: req.session.msg});
     } 
@@ -71,6 +83,69 @@ router.route('/')
       res.render('index', { title: 'AskUs!-Homepage'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
+    }
+  });
+
+router.route('/travel')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "travel"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/food')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "food"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/entertainment')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "entertainment"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/relationship')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "relationship"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/career')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "career"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/life')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "life"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
+router.route('/other')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskUs!-Travel', user: req.session.username, activeTab: "other"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
     }
   });
 
