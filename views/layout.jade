@@ -84,6 +84,10 @@ html
           .modal-body 
             form#rform.clearfix(method="post", action="/question/#{myQid}", name="myR")
               .form-group
+                //Reference:  -http://stackoverflow.com/questions/17505726/how-to-send-hidden-data
+                //            -https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+                input(type='hidden', value=user, name='username')
+              .form-group
                 textarea.form-control(form="rform", placeholder="Please elaborate...", name="resp")
               .form-group
                 button.btn.btn-primary.pull-right(type="submit") AskIt!
