@@ -77,7 +77,7 @@ router.route('/')
         question: req.body.question,
         descript: req.body.descript,
         tag: req.body.tag,
-        author: "TheHulk", //Refactor later
+        author: req.body.username,
         time: Date(), //Verify timezone later
         responses: []
       }

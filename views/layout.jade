@@ -48,6 +48,10 @@ html
               | ASK A QUESTION
           .modal-body 
             form#qform.clearfix(method="post", action="/", name="myq")
+              //Reference:  -http://stackoverflow.com/questions/17505726/how-to-send-hidden-data
+              //            -https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+              .form-group
+                input(type='hidden', value=user, name='username')
               .form-group
                 label(for="question") QUESTION
                 input#question.form-control(type="text", placeholder="Type your question here", name="question")
