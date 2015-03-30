@@ -82,7 +82,7 @@ router.route('/')
         responses: []
       }
       db.questions.push(newQuestion);
-      res.render('index', { title: 'AskUs!-Homepage'});
+      res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
     }
@@ -179,7 +179,7 @@ router.route('/question/:id')
         votes: 0
       };
       db.questions[req.params.id].responses.push(newResponse);
-      res.render('question', { title: 'AskUs!', myQid:req.params.id});
+      res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
     }
