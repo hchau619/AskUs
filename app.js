@@ -77,12 +77,12 @@ router.route('/')
         question: req.body.question,
         descript: req.body.descript,
         tag: req.body.tag,
-        author: "TheHulk", //Refactor later
+        author: req.body.username,
         time: Date(), //Verify timezone later
         responses: []
       }
       db.questions.push(newQuestion);
-      res.render('index', { title: 'AskUs!-Homepage'});
+      res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
     }
@@ -164,7 +164,7 @@ router.route('/other')
 router.route('/question/:id')
   .get(function(req, res) {
     if(req.session.validUser){
-      res.render('question', { title: 'AskUs!', myQid:req.params.id});
+      res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
     }
@@ -174,12 +174,12 @@ router.route('/question/:id')
       var newResponse = {
         rid: db.questions[req.params.id].responses.length,
         response: req.body.resp,
-        author: "Ironman", //Refactor later
+        author: req.body.username,
         time: Date(), //Verify timezone later
         votes: 0
       };
       db.questions[req.params.id].responses.push(newResponse);
-      res.render('question', { title: 'AskUs!', myQid:req.params.id});
+      res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
     }

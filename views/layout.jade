@@ -48,6 +48,10 @@ html
               | ASK A QUESTION
           .modal-body 
             form#qform.clearfix(method="post", action="/", name="myq")
+              //Reference:  -http://stackoverflow.com/questions/17505726/how-to-send-hidden-data
+              //            -https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+              .form-group
+                input(type='hidden', value=user, name='username')
               .form-group
                 label(for="question") QUESTION
                 input#question.form-control(type="text", placeholder="Type your question here", name="question")
@@ -64,6 +68,7 @@ html
                   option(value="relationship") Relationship
                   option(value="career") Career
                   option(value="life") Life
+                  option(value="other") Other
               .form-group
                 button.btn.btn-primary.pull-right(type="submit") AskIt!
                 button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
@@ -79,6 +84,10 @@ html
               | RESPOND
           .modal-body 
             form#rform.clearfix(method="post", action="/question/#{myQid}", name="myR")
+              .form-group
+                //Reference:  -http://stackoverflow.com/questions/17505726/how-to-send-hidden-data
+                //            -https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input
+                input(type='hidden', value=user, name='username')
               .form-group
                 textarea.form-control(form="rform", placeholder="Please elaborate...", name="resp")
               .form-group
