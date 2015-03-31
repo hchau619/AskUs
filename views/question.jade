@@ -2,22 +2,10 @@ extends ./layout.jade
 	
 //Determine which tab is active
 block tabs
-	li(role='presentation')
-		a(href='/') New
-	li(role='presentation')
-		a(href='#') Travel
-	li(role='presentation')
-		a(href='#') Food
-	li(role='presentation')
-		a(href='#') Entertainment       
-	li(role='presentation')
-		a(href='#') Relationship   
-	li(role='presentation')
-		a(href='#') Career      
-	li(role='presentation')
-		a(href='#') Life
-	li(role='presentation')
-		a(href='#') Other
+	if db.tabs != 0
+		each tab in db.tabs
+			li(role='presentation')
+				a(href='/' + tab) #{tab}
 
 block content
 	hr
