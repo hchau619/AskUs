@@ -21,7 +21,7 @@ var db = {
                 time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)",
                 tag: "food", 
                 responses:[
-                  {rid: 0, response: "McDonalds there is the bomb! Check it out!", votes:0, author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
+                  {rid: 0, response: "McDonalds there is the bomb! Check it out!", upvotes:[], downvotes:[], author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
                 ]
               },
               {
@@ -32,14 +32,31 @@ var db = {
                 time: "Fri Mar 27 2015 11:11:11 GMT-0700 (PDT)",
                 tag: "entertainment",
                 responses: [
-                  {rid: 0, response: "Why don't you watch the Avengers?", votes: 0, author: "CaptainAmerica", time: "Fri Mar 27 2015 11:13:11 GMT-0700 (PDT)"},
-                  {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", votes: 0, author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
+                  {rid: 0, response: "Why don't you watch the Avengers?", upvotes: [], downvotes:[], author: "CaptainAmerica", time: "Fri Mar 27 2015 11:13:11 GMT-0700 (PDT)"},
+                  {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", upvotes: [], downvotes: [], author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
                 ]
               }
             ],
 
             tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
           };
+
+function sort_questions(a, b) {
+  var ax = new Date(a.time).getTime();
+  var bx = new Date(b.time).getTime();
+  return bx-ax;
+}
+function sort_responses(a,b) {
+  return (b.upvotes.length-b.downvotes.length) - (a.upvotes.length-a.downvotes.length);
+}
+function qsort(){
+  db.questions.sort(sort_questions);
+}
+function rsort(){
+  db.questions.forEach(function(q) {
+    q.responses.sort(sort_responses);
+  });
+}
 
 // Setup view engine
 app.set('views', path.join(__dirname, '/views'));
@@ -64,6 +81,8 @@ app.locals.db = db;
 router.route('/')
   .get(function(req, res) {
     if(req.session.validUser){
+      qsort();
+      rsort();
       res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: "new"});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: req.session.msg});
@@ -82,6 +101,7 @@ router.route('/')
         responses: []
       }
       db.questions.push(newQuestion);
+      qsort();
       res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
@@ -164,7 +184,13 @@ router.route('/other')
 router.route('/question/:id')
   .get(function(req, res) {
     if(req.session.validUser){
-      res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
+      var index = 0;
+      for (var i = 0; i < db.questions.length; i++) {
+        if (db.questions[i].qid == req.params.id){
+          index = i;
+        }
+      }
+      res.render('question', { title: 'AskUs!', myQid:index, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
     }
@@ -176,9 +202,11 @@ router.route('/question/:id')
         response: req.body.resp,
         author: req.body.username,
         time: Date(), //Verify timezone later
-        votes: 0
+        upvotes: [],
+        downvotes: []
       };
       db.questions[req.params.id].responses.push(newResponse);
+      rsort();
       res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
@@ -186,15 +214,57 @@ router.route('/question/:id')
   });
 
 /* Routes for upvote of a repsonse*/
-router.get('/vote/up/:qid/:rid', function(req,res){   
-  var currVotes = ++db.questions[req.params.qid].responses[req.params.rid].votes;
-  res.json({data:currVotes});
+router.get('/vote/up/:qid/:rid', function(req,res){
+  if(req.session.validUser){
+    var index = 0;
+    for (var i = 0; i < db.questions[req.params.qid].responses.length; i++) {
+      if (db.questions[req.params.qid].responses[i].rid == req.params.rid){
+        index = i;
+      }
+    }
+    var x = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
+    var y = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
+    if (x==-1){
+      if (y!=-1){
+        db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
+      }
+      db.questions[req.params.qid].responses[index].upvotes.push(req.session.username);
+    } else {
+      db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
+    }
+    var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
+    rsort();
+    res.json({data:currVotes});
+  } else {
+    res.json({data:currVotes});
+  }
 });
 
 /* Routes for downvote of a repsonse*/
-router.get('/vote/down/:qid/:rid', function(req,res){   
-  var currVotes = --db.questions[req.params.qid].responses[req.params.rid].votes;
-  res.json({data:currVotes});
+router.get('/vote/down/:qid/:rid', function(req,res){
+  if(req.session.validUser){
+    var index = 0;
+    for (var i = 0; i < db.questions[req.params.qid].responses.length; i++) {
+      if (db.questions[req.params.qid].responses[i].rid == req.params.rid){
+        index = i;
+      }
+    }
+    var x = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
+    var y = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
+    if (y==-1){
+      if (x!=-1) {
+        db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
+      }
+      db.questions[req.params.qid].responses[index].downvotes.push(req.session.username);
+    } else {
+      db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
+    }
+    var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
+    rsort();
+    res.json({data:currVotes});
+  } else {
+    res.json({data:currVotes});
+  }
 });
 
 /* Routes for Registration */

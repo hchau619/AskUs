@@ -39,7 +39,7 @@ block content
 								span.text-muted #{resp.time}
 								span.text-muted #{resp.rid}
 							.pull-right
-								strong(id='votes#{resp.rid}') #{resp.votes} 
+								strong(id='votes#{resp.rid}') #{resp.upvotes.length - resp.downvotes.length} 
 								button.btn.btn-xs.btn-success.btn-circle.text-uppercase(type="button", onclick="upvote(#{myQid}, #{resp.rid})")
 									span.glyphicon.glyphicon-chevron-up
 								button.btn.btn-xs.btn-danger.btn-circle.text-uppercase(type="button", onclick="downvote(#{myQid}, #{resp.rid})")
