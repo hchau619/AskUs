@@ -41,17 +41,22 @@ var db = {
             tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
           };
 
+//Compare function for qsort()
 function sort_questions(a, b) {
   var ax = new Date(a.time).getTime();
   var bx = new Date(b.time).getTime();
   return bx-ax;
 }
+
+//Compare function for rsort()
 function sort_responses(a,b) {
   return (b.upvotes.length-b.downvotes.length) - (a.upvotes.length-a.downvotes.length);
 }
+
 function qsort(){
   db.questions.sort(sort_questions);
 }
+
 function rsort(){
   db.questions.forEach(function(q) {
     q.responses.sort(sort_responses);
@@ -70,7 +75,7 @@ app.use(session({secret: 'Victoria'}));
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Set up
+//More set up
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(router);
 
@@ -101,6 +106,7 @@ router.route('/')
         responses: []
       }
       db.questions.push(newQuestion);
+      
       qsort();
       res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
     }else{
