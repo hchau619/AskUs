@@ -27,6 +27,8 @@ block content
 					p #{db.questions[myQid].descript}
 	//Display responses
 	if db.questions[myQid].responses
+		- var rsort = function(a, b){ return (b.upvotes.length-b.downvotes.length) - (a.upvotes.length-a.downvotes.length);}
+		- db.questions[myQid].responses.sort(rsort)
 		each resp in db.questions[myQid].responses
 			.row
 				.col-lg-11.pull-right

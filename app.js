@@ -41,23 +41,6 @@ var db = {
             tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
           };
 
-function sort_questions(a, b) {
-  var ax = new Date(a.time).getTime();
-  var bx = new Date(b.time).getTime();
-  return bx-ax;
-}
-function sort_responses(a,b) {
-  return (b.upvotes.length-b.downvotes.length) - (a.upvotes.length-a.downvotes.length);
-}
-function qsort(){
-  db.questions.sort(sort_questions);
-}
-function rsort(){
-  db.questions.forEach(function(q) {
-    q.responses.sort(sort_responses);
-  });
-}
-
 // Setup view engine
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'jade');
@@ -81,8 +64,6 @@ app.locals.db = db;
 router.route('/')
   .get(function(req, res) {
     if(req.session.validUser){
-      qsort();
-      rsort();
       res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: "new"});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: req.session.msg});
@@ -101,7 +82,6 @@ router.route('/')
         responses: []
       }
       db.questions.push(newQuestion);
-      qsort();
       res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
@@ -206,7 +186,6 @@ router.route('/question/:id')
         downvotes: []
       };
       db.questions[req.params.id].responses.push(newResponse);
-      rsort();
       res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
@@ -233,7 +212,6 @@ router.get('/vote/up/:qid/:rid', function(req,res){
       db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
-    rsort();
     res.json({data:currVotes});
   } else {
     res.json({data:currVotes});
@@ -260,7 +238,6 @@ router.get('/vote/down/:qid/:rid', function(req,res){
       db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
-    rsort();
     res.json({data:currVotes});
   } else {
     res.json({data:currVotes});

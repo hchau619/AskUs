@@ -15,6 +15,12 @@ block content
 
   hr
   if db.questions != 0
+    - var qsort = function(a, b){
+    -   var ax = new Date(a.time).getTime();
+    -   var bx = new Date(b.time).getTime();
+    -   return bx-ax;
+    - }
+    - db.questions.sort(qsort)
     each q in db.questions
       if activeTab === 'new'
         .row
