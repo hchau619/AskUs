@@ -22,6 +22,9 @@ block content
 					.pull-right
 						button#reply.btn.btn-xs.btn-info.btn-circle.text-uppercase(type="button", data-toggle="modal", data-target="#myRModal")
 							span.glyphicon.glyphicon-share-alt REPLY
+						if db.questions[myQid].author === user
+							button#delete.btn.btn-xs.btn-danger.btn-circle.text-uppercase(type="button", data-toggle="modal", data-target="#myDelModal")
+								span.glyphicon.glyphicon-remove DELETE
 				.panel-body
 					p.question #{db.questions[myQid].question}
 					p #{db.questions[myQid].descript}

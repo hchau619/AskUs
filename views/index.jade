@@ -22,7 +22,7 @@ block content
     - }
     - db.questions.sort(qsort)
     each q in db.questions
-      if activeTab === 'new'
+      if activeTab === 'new' && q.active === true
         .row
           .col-lg-12
             .panel.panel-default
@@ -38,7 +38,26 @@ block content
               a(href='/question/#{q.qid}')
                 .panel-body
                   p.question #{q.question}
-      else if activeTab === q.tag
+      else if activeTab === 'myquestions'
+        if user === q.author && q.active === true
+          .row
+            .col-lg-12
+              .panel.panel-default
+                .panel-heading.clearfix
+                  .pull-left
+                    //PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
+                    span
+                      strong #{q.author}
+                    span.text-muted #{q.time}
+                  .pull-right
+                    a#comments.btn.btn-xs.btn-warning.btn-circle.text-uppercase(href='/question/#{q.qid}')
+                      span.glyphicon.glyphicon-comment Comments: #{q.responses.length}
+                    a#delete.btn.btn-xs.btn-danger.btn-circle.text-uppercase(href='/question/#{q.qid}')
+                      span.glyphicon.glyphicon-remove
+                a(href='/question/#{q.qid}')
+                  .panel-body
+                    p.question #{q.question}
+      else if activeTab === q.tag && q.active === true
         .row
           .col-lg-12
             .panel.panel-default

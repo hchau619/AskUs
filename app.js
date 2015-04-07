@@ -22,7 +22,8 @@ var db = {
                 tag: "food", 
                 responses:[
                   {rid: 0, response: "McDonalds there is the bomb! Check it out!", upvotes:[], downvotes:[], author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
-                ]
+                ],
+                active: true
               },
               {
                 qid: 1,
@@ -34,11 +35,12 @@ var db = {
                 responses: [
                   {rid: 0, response: "Why don't you watch the Avengers?", upvotes: [], downvotes:[], author: "CaptainAmerica", time: "Fri Mar 27 2015 11:13:11 GMT-0700 (PDT)"},
                   {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", upvotes: [], downvotes: [], author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
-                ]
+                ],
+                active: true
               }
             ],
 
-            tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
+            tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other", "myquestions"]
           };
 
 // Setup view engine
@@ -79,10 +81,11 @@ router.route('/')
         tag: req.body.tag,
         author: req.body.username,
         time: Date(), //Verify timezone later
-        responses: []
+        responses: [],
+        active: true
       }
       db.questions.push(newQuestion);
-      res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
+      res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
     }
@@ -160,6 +163,15 @@ router.route('/other')
     }
   });
 
+router.route('/myquestions')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskuUs!-My Questions', user: req.session.username, activeTab: "myquestions"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
 /* Routes to view a question. */
 router.route('/question/:id')
   .get(function(req, res) {
@@ -189,6 +201,17 @@ router.route('/question/:id')
       res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
+    }
+  });
+
+/* Route for deleting a question */
+router.route('/question/:id/delete')
+  .post(function(req, res){
+    if(req.session.validUser){
+      db.questions[req.params.id].active = false;
+      res.render('index', {title: 'AskuUs!-My Questions', user: req.session.username, activeTab: "myquestions"});
+    }else{
+      res.render('login', {title: 'AskUs!-Login'});
     }
   });
 
