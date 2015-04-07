@@ -8,7 +8,8 @@ function upvote(myQid, rid){
 		success: function(data){
 			var eltID= '#votes'+rid;
 			$(eltID).empty().append(data.data+" ");
-		},	
+		},
+		
 	});
 }
 
