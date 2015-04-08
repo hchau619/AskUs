@@ -1,3 +1,7 @@
+/* Course: CPSC 473 - Section 1 - Project 1
+ * Team: Hung Chau, Chris Danan, Alec Yenter, Akhil Choudhari
+ */
+
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -47,22 +51,22 @@ var db = {
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'jade');
 
-//Set up session
-//Change session storage to real db in production
+// Set up session
+// Change session storage to real db in production
 app.use(session({secret: 'Victoria'}));
 
-//Set up to parse POST data
+// Set up to parse POST data
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Set up
+// More set up
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(router);
 
-//Make db available to all templates
+// Make db available to all templates
 app.locals.db = db;
 
-/* Routes for home page. */
+// Routes for home page
 router.route('/')
   .get(function(req, res) {
     if(req.session.validUser){
@@ -83,7 +87,7 @@ router.route('/')
         time: Date(), //Verify timezone later
         responses: [],
         active: true
-      }
+      };
       db.questions.push(newQuestion);
       res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: 'new'});
     }else{
@@ -91,6 +95,7 @@ router.route('/')
     }
   });
 
+//Route for 'new' tab
 router.route('/new')
   .get(function(req, res){
     if(req.session.validUser){
@@ -100,6 +105,7 @@ router.route('/new')
     }
   });
 
+//Route for 'travel' tab
 router.route('/travel')
   .get(function(req, res){
     if(req.session.validUser){
@@ -109,6 +115,7 @@ router.route('/travel')
     }
   });
 
+//Route for 'food' tab
 router.route('/food')
   .get(function(req, res){
     if(req.session.validUser){
@@ -118,6 +125,7 @@ router.route('/food')
     }
   });
 
+//Route for 'entertainment' tab
 router.route('/entertainment')
   .get(function(req, res){
     if(req.session.validUser){
@@ -127,6 +135,7 @@ router.route('/entertainment')
     }
   });
 
+//Route for 'relationship' tab
 router.route('/relationship')
   .get(function(req, res){
     if(req.session.validUser){
@@ -136,6 +145,7 @@ router.route('/relationship')
     }
   });
 
+//Route for 'career' tab
 router.route('/career')
   .get(function(req, res){
     if(req.session.validUser){
@@ -145,6 +155,7 @@ router.route('/career')
     }
   });
 
+//Route for 'life' tab
 router.route('/life')
   .get(function(req, res){
     if(req.session.validUser){
@@ -154,6 +165,7 @@ router.route('/life')
     }
   });
 
+//Route for 'other' tab
 router.route('/other')
   .get(function(req, res){
     if(req.session.validUser){
@@ -163,6 +175,7 @@ router.route('/other')
     }
   });
 
+//Route for 'myquestions' tab
 router.route('/myquestions')
   .get(function(req, res){
     if(req.session.validUser){
@@ -172,7 +185,7 @@ router.route('/myquestions')
     }
   });
 
-/* Routes to view a question. */
+// Routes to view a question
 router.route('/question/:id')
   .get(function(req, res) {
     if(req.session.validUser){
@@ -187,7 +200,8 @@ router.route('/question/:id')
       res.render('login', { title: 'AskUs!-Login'});
     }
   })
-  .post(function(req, res){ //Handles adding a reponse to a question
+  //Handles adding a reponse to a question
+  .post(function(req, res){
     if(req.session.validUser){
       var newResponse = {
         rid: db.questions[req.params.id].responses.length,
@@ -197,6 +211,7 @@ router.route('/question/:id')
         upvotes: [],
         downvotes: []
       };
+      // Add new response to question
       db.questions[req.params.id].responses.push(newResponse);
       res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
@@ -204,10 +219,11 @@ router.route('/question/:id')
     }
   });
 
-/* Route for deleting a question */
+// Route for deleting a question
 router.route('/question/:id/delete')
   .post(function(req, res){
     if(req.session.validUser){
+      // Turn off question visibility
       db.questions[req.params.id].active = false;
       res.render('index', {title: 'AskuUs!-My Questions', user: req.session.username, activeTab: "myquestions"});
     }else{
@@ -215,29 +231,35 @@ router.route('/question/:id/delete')
     }
   });
 
-/* Routes for upvote of a repsonse*/
+// Routes for upvote of a repsonse
 router.get('/vote/up/:qid/:rid', function(req,res){
   if(req.session.validUser){
     var index = 0;
+    // Find response 
     for (var i = 0; i < db.questions[req.params.qid].responses.length; i++) {
       if (db.questions[req.params.qid].responses[i].rid == req.params.rid){
         index = i;
       }
     }
-    var x = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
-    var y = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
-    if (x==-1){
-      if (y!=-1){
-        db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
+    // Checking user vote history
+    var upvoted = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
+    var downvoted = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
+    
+    if (upvoted === -1){ //if user have not upvoted
+      if (downvoted!= -1){ // if user have downvoted
+        // remove user from downvote history
+        db.questions[req.params.qid].responses[index].downvotes.splice(downvoted, 1);
       }
+      //record user upvote to response vote history
       db.questions[req.params.qid].responses[index].upvotes.push(req.session.username);
-    } else {
-      db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
+    } else { //user have upvoted already
+      // undo user previous upvote
+      db.questions[req.params.qid].responses[index].upvotes.splice(upvoted, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
     res.json({data:currVotes});
   } else {
-    res.json({data:currVotes});
+    res.render('login', {title: 'AskUs!-Login'});
   }
 });
 
@@ -245,29 +267,35 @@ router.get('/vote/up/:qid/:rid', function(req,res){
 router.get('/vote/down/:qid/:rid', function(req,res){
   if(req.session.validUser){
     var index = 0;
+    // Find response
     for (var i = 0; i < db.questions[req.params.qid].responses.length; i++) {
       if (db.questions[req.params.qid].responses[i].rid == req.params.rid){
         index = i;
       }
     }
-    var x = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
-    var y = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
-    if (y==-1){
-      if (x!=-1) {
-        db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
+    //Check voting history
+    var upvoted = db.questions[req.params.qid].responses[index].upvotes.indexOf(req.session.username);
+    var downvoted = db.questions[req.params.qid].responses[index].downvotes.indexOf(req.session.username);
+    
+    if (downvoted==-1){ //If user have not downvoted
+      if (upvoted!=-1) { //if user have upvoted
+        // remove user from upvote history
+        db.questions[req.params.qid].responses[index].upvotes.splice(upvoted, 1);
       }
+      //record user downvote to response history
       db.questions[req.params.qid].responses[index].downvotes.push(req.session.username);
     } else {
-      db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
+      // undo user previous downvote
+      db.questions[req.params.qid].responses[index].downvotes.splice(downvoted, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
     res.json({data:currVotes});
   } else {
-    res.json({data:currVotes});
+    res.render('login', {title: 'AskUs!-Login'});
   }
 });
 
-/* Routes for Registration */
+// Routes for Registration
 router.route('/registration')
   .get(function(req, res){
     res.render('registration', { title: 'AskUs! - Registration'});
@@ -292,9 +320,9 @@ router.route('/registration')
   });
 
 
-/* Routes handles logging in */
+// Routes handles logging in */
 router.post('/login',function(req,res){
-  //Validate credential
+  //Validate login credentials
   var found = db.users.filter(function(acc){
     return acc.email === req.body.email && acc.password === req.body.password;
   });
@@ -316,7 +344,7 @@ router.get('/logout', function(req, res){
 });
 
 //Create server
-var server = app.listen(port, console.log('Now listening on port: %s', port));
+app.listen(port, console.log('Now listening on port: %s', port));
 
 
 // catch 404 and forward to error handler

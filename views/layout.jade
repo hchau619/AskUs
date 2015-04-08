@@ -10,7 +10,7 @@ html
   body
     .container
       // Navbar
-      //Source: Twitter Bootstrap   
+      // From: Twitter Bootstrap   
       nav.navbar.navbar-inverse.navbar-fixed-top
         .container
           .navbar-header
@@ -20,11 +20,12 @@ html
               span.icon-bar         
               span.icon-bar
           #navbar.navbar-collapse.collapse
+            // Added logout button
             a.btn.btn-primary.btn-md.pull-right(href='/logout')
               | LOGOUT
+            // Added Ask button
             button.btn.btn-success.btn-md.pull-left(type="button", data-toggle="modal", data-target="#myQModal")
               | ASK A QUESTION
-      // Navbar END
     hr
     hr
   
@@ -38,7 +39,7 @@ html
 
 
     //Question Modal
-    //Source: Twitter Bootstrap   
+    //From: Twitter Bootstrap   
     #myQModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
@@ -74,7 +75,7 @@ html
                 button.btn.btn-primary.pull-right(type="submit") AskIt!
                 button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
     // Response Modal
-    //Source: Twitter Bootstrap
+    // From: Twitter Bootstrap
     #myRModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
@@ -112,7 +113,6 @@ html
                   button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
   //jQuery (necessary for Bootstrap's JavaScript plugins)
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
-  // Backup jquery for demo: script(src='/js/jquery1.11.2.js')
   // Include all compiled plugins (below), or include individual files as needed
   script(src='/js/bootstrap.min.js')
   block footer

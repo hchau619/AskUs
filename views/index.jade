@@ -1,8 +1,7 @@
 extends ./layout.jade
 
-
 block tabs
-
+  //Determine active tab
   if db.tabs != 0
     each tab in db.tabs
       if activeTab === tab
@@ -12,24 +11,25 @@ block tabs
         li(role='presentation')
           a(href='/' + tab) #{tab}
 
+//Display questions
 block content
-
   hr
   if db.questions != 0
+    // Sort questions from newest to oldest
     - var qsort = function(a, b){
     -   var ax = new Date(a.time).getTime();
     -   var bx = new Date(b.time).getTime();
     -   return bx-ax;
     - }
-    - db.questions.sort(qsort)
+    - db.questions.sort(qsort);
+    // Display questions
     each q in db.questions
-      if activeTab === 'new' && q.active === true
+      if activeTab === 'new' && q.active === true 
         .row
           .col-lg-12
             .panel.panel-default
               .panel-heading.clearfix
                 .pull-left
-                  //PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
                   span
                     strong #{q.author} 
                   span.text-muted #{q.time}
@@ -46,7 +46,6 @@ block content
               .panel.panel-default
                 .panel-heading.clearfix
                   .pull-left
-                    //PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
                     span
                       strong #{q.author}
                     span.text-muted #{q.time}
@@ -64,7 +63,6 @@ block content
             .panel.panel-default
               .panel-heading.clearfix
                 .pull-left
-                  //PROFILE PIX img.img-responsive.user-photo.img-circle(src='img/sea.jpg')
                   span
                     strong #{q.author} 
                   span.text-muted #{q.time}
@@ -74,3 +72,4 @@ block content
               a(href='/question/#{q.qid}')
                 .panel-body
                   p.question #{q.question}
+  
