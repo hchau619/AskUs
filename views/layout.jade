@@ -94,7 +94,22 @@ html
               .form-group
                 button.btn.btn-primary.pull-right(type="submit") AskIt!
                 button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
-    
+    //Delete Question Modal
+    #myDelModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="false")
+            h4#myModalLabel.modal-title
+              | Are you sure you want to delete this question?
+            .modal-body
+              form#delform.clearfix(method="post", action="/question/#{myQid}/delete", name="myDel")
+                .form-group
+                  input(type="hidden", value=user, name="username")
+                .form-group
+                  button.btn.btn-primary.text-center(type="submit") Delete My Question
+                  button.btn.btn-default.pull-left(type="button", data-dismiss="modal") Close
   //jQuery (necessary for Bootstrap's JavaScript plugins)
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
   // Backup jquery for demo: script(src='/js/jquery1.11.2.js')

@@ -22,7 +22,8 @@ var db = {
                 tag: "food", 
                 responses:[
                   {rid: 0, response: "McDonalds there is the bomb! Check it out!", upvotes:[], downvotes:[], author:"Ironman", time: "Mon Mar 23 2015 22:21:01 GMT-0700 (PDT)"}
-                ]
+                ],
+                active: true
               },
               {
                 qid: 1,
@@ -34,29 +35,13 @@ var db = {
                 responses: [
                   {rid: 0, response: "Why don't you watch the Avengers?", upvotes: [], downvotes:[], author: "CaptainAmerica", time: "Fri Mar 27 2015 11:13:11 GMT-0700 (PDT)"},
                   {rid: 1, response: "Any Ironman movie will be far more superior entertainment than what anyone else suggests.", upvotes: [], downvotes: [], author: "Ironman", time: "Fri Mar 27 12:12:12 GMT-0700 (PDT)"}
-                ]
+                ],
+                active: true
               }
             ],
 
-            tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other"]
+            tabs: ["new", "travel", "food", "entertainment", "relationship", "career", "life", "other", "myquestions"]
           };
-
-function sort_questions(a, b) {
-  var ax = new Date(a.time).getTime();
-  var bx = new Date(b.time).getTime();
-  return bx-ax;
-}
-function sort_responses(a,b) {
-  return (b.upvotes.length-b.downvotes.length) - (a.upvotes.length-a.downvotes.length);
-}
-function qsort(){
-  db.questions.sort(sort_questions);
-}
-function rsort(){
-  db.questions.forEach(function(q) {
-    q.responses.sort(sort_responses);
-  });
-}
 
 // Setup view engine
 app.set('views', path.join(__dirname, '/views'));
@@ -81,8 +66,6 @@ app.locals.db = db;
 router.route('/')
   .get(function(req, res) {
     if(req.session.validUser){
-      qsort();
-      rsort();
       res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: "new"});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: req.session.msg});
@@ -98,11 +81,11 @@ router.route('/')
         tag: req.body.tag,
         author: req.body.username,
         time: Date(), //Verify timezone later
-        responses: []
+        responses: [],
+        active: true
       }
       db.questions.push(newQuestion);
-      qsort();
-      res.render('index', { title: 'AskUs!-Homepage', activeTab: 'new'});
+      res.render('index', { title: 'AskUs!-Homepage', user: req.session.username, activeTab: 'new'});
     }else{
       res.render('login', { title: 'AskUs!-Login', promptFail: 'Only members can ask questions.'});
     }
@@ -180,6 +163,15 @@ router.route('/other')
     }
   });
 
+router.route('/myquestions')
+  .get(function(req, res){
+    if(req.session.validUser){
+      res.render('index', {title: 'AskuUs!-My Questions', user: req.session.username, activeTab: "myquestions"});
+    } else{
+      res.render('login', {title: 'AskUs!-Login', promptFail: req.session.msg});
+    }
+  });
+
 /* Routes to view a question. */
 router.route('/question/:id')
   .get(function(req, res) {
@@ -206,10 +198,20 @@ router.route('/question/:id')
         downvotes: []
       };
       db.questions[req.params.id].responses.push(newResponse);
-      rsort();
       res.render('question', { title: 'AskUs!', myQid:req.params.id, user: req.session.username});
     }else{
       res.render('login', { title: 'AskUs!-Login'});
+    }
+  });
+
+/* Route for deleting a question */
+router.route('/question/:id/delete')
+  .post(function(req, res){
+    if(req.session.validUser){
+      db.questions[req.params.id].active = false;
+      res.render('index', {title: 'AskuUs!-My Questions', user: req.session.username, activeTab: "myquestions"});
+    }else{
+      res.render('login', {title: 'AskUs!-Login'});
     }
   });
 
@@ -233,7 +235,6 @@ router.get('/vote/up/:qid/:rid', function(req,res){
       db.questions[req.params.qid].responses[index].upvotes.splice(x, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
-    rsort();
     res.json({data:currVotes});
   } else {
     res.json({data:currVotes});
@@ -260,7 +261,6 @@ router.get('/vote/down/:qid/:rid', function(req,res){
       db.questions[req.params.qid].responses[index].downvotes.splice(y, 1);
     }
     var currVotes = db.questions[req.params.qid].responses[index].upvotes.length - db.questions[req.params.qid].responses[index].downvotes.length;
-    rsort();
     res.json({data:currVotes});
   } else {
     res.json({data:currVotes});
@@ -341,8 +341,8 @@ if (app.get('env') === 'development') {
 
 // Production error handler
 // No stacktraces leaked to user
-/* Citation: Express
-app.use(function(err, req, res, next) {
+// Citation: Express
+/*app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
