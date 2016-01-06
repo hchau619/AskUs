@@ -22,3 +22,6 @@ dependencies needed for the project.
 
 4. Then, type in "node app.js" to start the project. The default port the server will be listening on is
 port 3000 (http://localhost:3000).
+
+# Documentation
+Additional documentation can be [here](https://github.com/hchau619/AskUs/blob/master/473_Project_Documentation.pdf).
