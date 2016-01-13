@@ -24,4 +24,4 @@ dependencies needed for the project.
 port 3000 (http://localhost:3000).
 
 # Documentation
-Additional documentation can be [here](https://github.com/hchau619/AskUs/blob/master/473_Project_Documentation.pdf).
+Additional documentation can be found [here](https://github.com/hchau619/AskUs/blob/master/473_Project_Documentation.pdf).
